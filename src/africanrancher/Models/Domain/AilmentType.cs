@@ -1,13 +1,8 @@
 ﻿namespace africanrancher.Models.Domain
 {
-    public class BreedType
+    public class AilmentType
     {
-        public int Id { get;set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
-
-
-    
-
-    
 }
