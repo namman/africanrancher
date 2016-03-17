@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using africanrancher.Models;
 using africanrancher.Models.Domain;
+using africanrancher.Models.Domain.SampleData;
 using africanrancher.Services;
 
 namespace africanrancher
@@ -54,7 +55,6 @@ namespace africanrancher
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]))
                 .AddDbContext<DomainDataDbContext>(options =>
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
-
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -122,14 +122,22 @@ namespace africanrancher
                 using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                        .CreateScope())
                 {
-                    serviceScope.ServiceProvider.GetService<DomainDataDbContext>()
-                        .Database.EnsureCreated();
+                    var domainContext = serviceScope.ServiceProvider.GetService<DomainDataDbContext>();
+                    domainContext.Database.EnsureCreated();
+
+                    // add some sample data
+                    domainContext.AddBovines();
+                    domainContext.SaveChanges();
+
 
                     serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
                         .Database.EnsureCreated();
 
 
                 }
+
+
+
             }
         }
 

@@ -14,8 +14,6 @@ namespace africanrancher.Controllers
     {
         private readonly DomainDataDbContext _context;
 
-        // todo: DI for context
-
         public BovinesController(DomainDataDbContext context)
         {
             _context = context;
