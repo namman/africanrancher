@@ -14,6 +14,7 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
     <ApplicationInsightsResourceId>/subscriptions/05160032-7e1c-4fc2-bcd9-7a759bcb97d3/resourcegroups/Default-Web-AustraliaEast/providers/microsoft.insights/components/africanrancher</ApplicationInsightsResourceId>
+    <DevelopmentServerPort>52557</DevelopmentServerPort>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />

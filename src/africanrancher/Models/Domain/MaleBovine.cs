@@ -2,7 +2,7 @@
 
 namespace africanrancher.Models.Domain
 {
-    public class MaleCow : Cow
+    public class MaleBovine : Bovine
     {
        
         

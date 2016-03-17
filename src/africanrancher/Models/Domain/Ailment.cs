@@ -10,7 +10,7 @@ namespace africanrancher.Models.Domain
         public int Type { get; set; }
         public DateTimeOffset? Diagnosed { get; set; }
 
-       public  Cow Cow { get; set; }
+       public  Bovine Bovine { get; set; }
 
         public List<Treatment> Treatments { get; set; }
     }

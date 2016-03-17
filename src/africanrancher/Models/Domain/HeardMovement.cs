@@ -11,7 +11,7 @@ namespace africanrancher.Models.Domain
         public int Id { get; set; }
         public DateTimeOffset Entry { get; set; }
 
-        public Cow Cow { get; set; }
+        public Bovine Bovine { get; set; }
         public Heard Heard { get; set; }
     }
 

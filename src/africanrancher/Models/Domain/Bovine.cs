@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace africanrancher.Models.Domain
 {
-    public class Cow
+    public class Bovine
     {
         public int Id { get; set; }
 
@@ -13,10 +13,10 @@ namespace africanrancher.Models.Domain
         public string Brand { get; set; }
 
 
-        public MaleCow Sire { get; set; }
+        public MaleBovine Sire { get; set; }
 
 
-        public FemaleCow Dam { get; set; }
+        public FemaleBovine Dam { get; set; }
 
         public DateTimeOffset? BirthDate { get; set; }
 
