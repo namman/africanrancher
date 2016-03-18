@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "African Rancher";
+    Layout = "_Layout";
+}
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/angular/angular.min.js"></script>
+<script src="~/lib/kendoui/kendo.core.min.js"></script>
+<script src="~/lib/kendoui/kendo.data.min.js"></script>
+<script src="~/lib/kendoui/kendo.angular.min.js"></script>
+<script src="~/lib/kendoui/kendo.grid.min.js"></script>
+
+<script src="~/js/angularModules/app.js"></script>
+<script src="~/js/angularModules/bovinesController.js"></script>
+
+<div ng-app="app">
+    <div ng-controller="bovinesController">
+        {{title}}
+    </div>
+</div>
