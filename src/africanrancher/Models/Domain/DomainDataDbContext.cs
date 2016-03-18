@@ -23,4 +23,6 @@ namespace africanrancher.Models.Domain
 
        
     }
+
+    
 }

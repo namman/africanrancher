@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using africanrancher.Controllers;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -65,7 +66,9 @@ namespace africanrancher
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            
+
+            services.AddSingleton(typeof (IBreedNameProvider), typeof (BreedNameFromDbProvider));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,17 +13,20 @@ namespace africanrancher.Controllers
     public class BovinesController : Controller
     {
         private readonly DomainDataDbContext _context;
+        private readonly IBreedNameProvider _breedNameProvider;
 
-        public BovinesController(DomainDataDbContext context)
+        public BovinesController(DomainDataDbContext context, IBreedNameProvider breedNameProvider)
         {
             _context = context;
+            _breedNameProvider = breedNameProvider;
+            //todo: breed name provider here
         }
 
         [HttpGet]
         public JsonResult Get()
         {
             
-                var dtos = _context.Bovines.ToList().Select(b => b.ToDto());
+                var dtos = _context.Bovines.ToList().Select(b => b.ToDto(_breedNameProvider.GetName));
                 return Json(dtos);
             
         }
