@@ -3,8 +3,10 @@
     Layout = "_Layout";
 }
 
+<link rel="stylesheet" href="~/css/kendo.common.min.css" />
+<link rel="stylesheet" href="~/css/kendo.bootstrap.min.css" />
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <script src="~/lib/angular/angular.min.js"></script>
 <script src="~/lib/kendoui/kendo.core.min.js"></script>
 <script src="~/lib/kendoui/kendo.data.min.js"></script>
@@ -15,7 +17,10 @@
 <script src="~/js/angularModules/bovinesController.js"></script>
 
 <div ng-app="app">
+    
     <div ng-controller="bovinesController">
-        {{title}}
+        <kendo-grid options="bovinesGridOptions">
+            
+        </kendo-grid>
     </div>
 </div>
