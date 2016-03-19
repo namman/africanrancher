@@ -4,6 +4,6 @@ namespace africanrancher.Controllers
 {
     public interface IBreedNameProvider
     {
-        string GetName(int number);
+        bool IsValid(int number);
     }
 }

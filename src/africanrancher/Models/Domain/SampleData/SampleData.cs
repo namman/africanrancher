@@ -7,6 +7,8 @@ namespace africanrancher.Models.Domain.SampleData
 {
     public static class SampleData
     {
+
+
         public static void AddBovines(this DomainDataDbContext context)
         {
             var sire = (MaleBovine)CreateRandomBovine(null, null,true);
@@ -29,7 +31,7 @@ namespace africanrancher.Models.Domain.SampleData
                 Bolus = Guid.NewGuid().ToString(),
                 Brand = Guid.NewGuid().ToString(),
                 EarTag = Guid.NewGuid().ToString(),
-                Breed = 0,
+                Breed = "East African Zebu",
                 Sire = sire,
                 Dam = dam
 

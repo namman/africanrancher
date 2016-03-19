@@ -17,6 +17,10 @@
                         editable: true,
                         type: "string"
                     },
+                    'Sex': {
+                        editable: true,
+                        type: "number"
+                    },
                     'EarTag': {
                         editable: true,
                         type: "string"
@@ -31,11 +35,11 @@
                     },
                     'WeeningDate': {
                         editable: true,
-                        type: 'date'
+                        type: "date"
                     },
                     'Breed': {
                         editable: true,
-                        type: 'string'
+                        type: "string"
                     },
                     'SireBolus': {
                         editable: true,
@@ -57,6 +61,10 @@
                     read: {
                         datatype: "json",
                         url: "api/bovines"
+                    },
+                    create: {
+                        datatype: "json",
+                        url: "api/bovines"
                     }
                 }
             });
@@ -64,29 +72,33 @@
             var options = {
                 columns: [
                     {
-                        field: "Id",
-                        title: "Id"
+                        field: "Bolus",
+                        title: "Bolus"
+                    },
+                    {
+                        field: "Sex",
+                        title: "Sex"
+                    },
+                    {
+                        field: "Brand",
+                        title: "Brand"
                     },
                     {
                         field: "EarTag",
                         title: "Ear Tag"
                     },
                     {
-                        field: "Bolus",
-                        title: "Bolus"
-                    },
-                    {
                         field: "BirthDate",
                         title: "Calved"
                     },
                     {
-                        field: 'WeeningDate',
-                        title: 'Weening Date'
+                        field: "WeeningDate",
+                        title: "Weened"
                     },
-                {
-                    field: 'Breed',
-                    title: 'Breed'
-                },
+                    {
+                        field: "Breed",
+                        title: "Breed"
+                    },
                     {
                         field: "SireBolus",
                         title: "Sire Bolus"
@@ -95,8 +107,11 @@
                         field: "DamBolus",
                         title: "Dam Bolus"
                     }
+                    
                 ],
-                dataSource: bovinesDataSource
+                dataSource: bovinesDataSource,
+                sortable: true,
+                filterable: true
             };
             return {
                 options: options

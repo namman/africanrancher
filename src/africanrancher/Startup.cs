@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using africanrancher.Controllers;
+﻿using africanrancher.Controllers;
+using africanrancher.Models;
+using africanrancher.Models.Domain;
+using africanrancher.Services;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -10,10 +9,6 @@ using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using africanrancher.Models;
-using africanrancher.Models.Domain;
-using africanrancher.Models.Domain.SampleData;
-using africanrancher.Services;
 
 namespace africanrancher
 {
@@ -25,7 +20,7 @@ namespace africanrancher
 
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
             if (env.IsDevelopment())
             {
@@ -33,7 +28,7 @@ namespace africanrancher
                 builder.AddUserSecrets();
 
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
+                builder.AddApplicationInsightsSettings(true);
             }
 
             builder.AddEnvironmentVariables();
@@ -67,12 +62,13 @@ namespace africanrancher
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            services.AddSingleton(typeof (IBreedNameProvider), typeof (BreedNameFromDbProvider));
-
+            // db initializer
+            services.AddTransient<DbInitializer, DbInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            DbInitializer dbInitializer)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -96,10 +92,12 @@ namespace africanrancher
                         .CreateScope())
                     {
                         serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                             .Database.Migrate();
+                            .Database.Migrate();
                     }
                 }
-                catch { }
+                catch
+                {
+                }
             }
 
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
@@ -112,35 +110,31 @@ namespace africanrancher
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc(routes => { routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"); });
 
-
-            if (env.IsDevelopment())
+            // initialize database
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
             {
-                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                       .CreateScope())
+                var domainContext = serviceScope.ServiceProvider.GetService<DomainDataDbContext>();
+                var identityContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+
+                if (env.IsDevelopment())
                 {
-                    var domainContext = serviceScope.ServiceProvider.GetService<DomainDataDbContext>();
-                    domainContext.Database.EnsureCreated();
-
-                    // add some sample data
-                    domainContext.AddBovines();
-                    domainContext.SaveChanges();
-
-
-                    serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                        .Database.EnsureCreated();
-
-
+                    await domainContext.Database.EnsureDeletedAsync();
+                    await domainContext.Database.EnsureCreatedAsync();
+                    await dbInitializer.InitializeBreeds();
+                    await dbInitializer.AddSampleCattle();
                 }
 
+                if (env.IsProduction() || env.IsStaging())
+                {
+                    await domainContext.Database.EnsureCreatedAsync();
+                    await domainContext.Database.MigrateAsync();
 
-
+                    await identityContext.Database.EnsureCreatedAsync();
+                    await identityContext.Database.MigrateAsync();
+                }
             }
         }
 

@@ -20,7 +20,7 @@ namespace africanrancher.Models.Domain
 
         public DateTimeOffset? BirthDate { get; set; }
 
-        public int? Breed { get; set; }
+        public string Breed { get; set; }
         public DateTimeOffset? WeeningDate { get; set; }
         
         public DateTimeOffset? Death { get; set; }

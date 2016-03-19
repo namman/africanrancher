@@ -1,45 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using africanrancher.Models.Domain;
+using Microsoft.Data.Entity;
 
 namespace africanrancher.Controllers
 {
     public static class DtoTransformations
     {
-        public static BovineDto ToDto(this Bovine bovine, Func<int,string> breedNameProvider)
+        public static BovineDto ToDto(this Bovine bovine)
         {
-            return new BovineDto(bovine, breedNameProvider);
-        }
-        
-    }
-
-    public class BovineDto
-    {
-        private readonly Bovine _bovine;
-        private readonly Func<int, string> _breedNameProvider;
-
-        public BovineDto(Bovine bovine, Func<int, string> breedNameProvider)
-        {
-            _bovine = bovine;
-            _breedNameProvider = breedNameProvider;
+            return new BovineDto(bovine);
         }
 
-        public string EarTag => _bovine.EarTag;
-        public string Bolus => _bovine.Bolus;
+        public static async Task<Bovine> CreateFromDto(this BovineDto bovineDto, DomainDataDbContext context)
+        {
+            FemaleBovine dam = null;
+            if (bovineDto.DamBolus != null)
+            {
+                var damInDb = await context.FemaleBovines.SingleOrDefaultAsync(d => d.Bolus == bovineDto.DamBolus);
+                if (damInDb != null)
+                    dam = damInDb;
+            }
 
-        public string Brand => _bovine.Bolus;
+            MaleBovine sire = null;
+            if (bovineDto.SireBolus != null)
+            {
+                var sireInDb = await context.MaleBovines.SingleOrDefaultAsync(d => d.Bolus == bovineDto.SireBolus);
+                if (sireInDb != null)
+                    sire = sireInDb;
+            }
 
-        public DateTimeOffset? BirthDate => _bovine.BirthDate;
-        public string SireBolus => _bovine.Sire?.Bolus;
-        public string DamBolus => _bovine.Dam?.Bolus;
+            if (bovineDto.Sex == Sex.Male)
+            {
+                return new MaleBovine
+                {
+                    CastrationDate = bovineDto.CastrationDate,
+                    Breed = bovineDto.Breed,
+                    Sire = sire,
+                    Dam = dam,
+                    Bolus = bovineDto.Bolus,
+                    BirthDate = bovineDto.BirthDate,
+                    Brand = bovineDto.Brand,
+                    Death = bovineDto.Death,
+                    EarTag = bovineDto.EarTag,
+                    WeeningDate = bovineDto.WeeningDate
+                };
+            }
 
-        public string Breed => _bovine.Breed != null ? _breedNameProvider(_bovine.Breed.Value) : "Unknown";
-        public DateTimeOffset? WeeningDate => _bovine.WeeningDate;
 
-        public DateTimeOffset? Death => _bovine.Death;
-       
-
+            return new FemaleBovine
+            {
+                Breed = bovineDto.Breed,
+                Sire = sire,
+                Dam = dam,
+                Bolus = bovineDto.Bolus,
+                BirthDate = bovineDto.BirthDate,
+                Brand = bovineDto.Brand,
+                Death = bovineDto.Death,
+                EarTag = bovineDto.EarTag,
+                WeeningDate = bovineDto.WeeningDate
+            };
+        }
     }
 }
