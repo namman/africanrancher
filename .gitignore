@@ -245,3 +245,5 @@ paket-files/
 *.sln.iml
 
 kendo.*
+
+launchSettings.json
