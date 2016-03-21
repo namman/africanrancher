@@ -19,7 +19,7 @@ namespace africanrancher.Models.Domain
        
         public async Task AddSampleCattle()
         {
-            _context.AddBovines();
+            _context.AddBovines(100);
             await _context.SaveChangesAsync();
         }
         

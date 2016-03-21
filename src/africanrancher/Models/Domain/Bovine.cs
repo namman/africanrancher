@@ -7,6 +7,7 @@ namespace africanrancher.Models.Domain
     {
         public int Id { get; set; }
 
+        public string NickName { get; set; }
         public string EarTag { get; set; }
         public string Bolus { get; set; }
 
