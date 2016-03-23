@@ -30,6 +30,7 @@ namespace africanrancher.Controllers
             }
         }
 
+        public string NickName => _bovine.NickName;
         public string EarTag => _bovine.EarTag;
         public string Bolus => _bovine.Bolus;
 
