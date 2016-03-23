@@ -1,6 +1,9 @@
-﻿using africanrancher.Controllers;
+﻿using System;
+using System.IO;
+using africanrancher.Controllers;
 using africanrancher.Models;
 using africanrancher.Models.Domain;
+using africanrancher.Models.Domain.SampleData;
 using africanrancher.Services;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -63,7 +66,10 @@ namespace africanrancher
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             // db initializer
+            
             services.AddTransient<DbInitializer, DbInitializer>();
+
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,6 +130,8 @@ namespace africanrancher
                     await domainContext.Database.EnsureDeletedAsync();
                     await domainContext.Database.EnsureCreatedAsync();
                     await dbInitializer.InitializeBreeds();
+                    var listOfNames = File.ReadAllLines(Path.Combine(env.WebRootPath, "resources/listOfNames.txt"));
+                    dbInitializer.InjectRandomNameProvider(new RandomNameProvider(listOfNames));
                     await dbInitializer.AddSampleCattle();
                 }
 

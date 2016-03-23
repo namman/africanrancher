@@ -10,16 +10,26 @@ namespace africanrancher.Models.Domain
     public class DbInitializer
     {
         private readonly DomainDataDbContext _context;
+        private RandomNameProvider _randomNameProvider;
 
         public DbInitializer(DomainDataDbContext context)
         {
             _context = context;
+            
         }
 
-       
+        public void InjectRandomNameProvider(RandomNameProvider randomNameProvider)
+        {
+            _randomNameProvider = randomNameProvider;
+        }
+
         public async Task AddSampleCattle()
         {
-            _context.AddBovines(100);
+            if (_randomNameProvider == null)
+            {
+                throw new MissingFieldException("Must inject random name provider first.");
+            }
+            _context.AddBovines(100,_randomNameProvider);
             await _context.SaveChangesAsync();
         }
         
@@ -35,9 +45,7 @@ namespace africanrancher.Models.Domain
                 new BreedType() {Name = "Charolis"},
                 new BreedType() {Name = "Hereford"},
                 new BreedType() {Name = "Boran"},
-
             });
-
 
             await _context.SaveChangesAsync();
         }
