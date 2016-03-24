@@ -25,7 +25,7 @@
 
 <script>
     $(document).ready(function() {
-        
+
         var id = function() {
             var expr = '([0-9]+)$';
             var regex = new RegExp(expr);
@@ -33,11 +33,17 @@
             return results[1];
         }();
 
-        $.getJSON('/api/Bovines/' + id,null, function(data, textStatus, jqXHR) {
+        $.getJSON('/api/Bovines/' + id, null, function(data, textStatus, jqXHR) {
             var name = data.NickName;
             var nameElem = $("#name");
             nameElem.append(name);
         });
+        
+
+
+
     })
 </script>
+
+
 
