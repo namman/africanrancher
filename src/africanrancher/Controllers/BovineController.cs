@@ -8,7 +8,7 @@ using Microsoft.Data.Entity;
 
 namespace africanrancher.Controllers
 {
-    [Route("api/[controller]")]
+    
     public class BovinesController : Controller
     {
         private readonly DomainDataDbContext _context;
@@ -21,6 +21,7 @@ namespace africanrancher.Controllers
         }
 
         [HttpGet]
+        [Route("api/Bovines")]
         public async Task<JsonResult> Get()
         {
             var bovines = await _context.Bovines.ToListAsync();
@@ -28,11 +29,17 @@ namespace africanrancher.Controllers
             return Json(dtos);
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/Bovines/5
+        [HttpGet]
+        [Route("api/Bovines/{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var bovine = await _context.Bovines.SingleOrDefaultAsync(b => b.Id == id);
+            if (bovine == null)
+                return HttpNotFound();
+            var bovineDto = bovine.ToDto();
+            return Json(bovineDto);
+            
         }
 
         // POST api/values

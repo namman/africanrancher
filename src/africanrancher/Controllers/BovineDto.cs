@@ -7,7 +7,7 @@ namespace africanrancher.Controllers
     {
         
         private readonly Bovine _bovine;
-        
+         
 
         public BovineDto(Bovine bovine)
         {
@@ -29,6 +29,8 @@ namespace africanrancher.Controllers
                 throw new ArgumentException("Unrecognised type of bovine: " + _bovine.GetType().ToString());
             }
         }
+
+        public int Id => _bovine.Id;
 
         public string NickName => _bovine.NickName;
         public string EarTag => _bovine.EarTag;

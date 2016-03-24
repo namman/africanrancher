@@ -45,7 +45,6 @@
                         <th>Sex</th>
                         <th>Breed</th>
                         <th>Weening Date</th>
-
                     </tr>
                 </tfoot>
             </table>
@@ -58,19 +57,32 @@
         $('#table_id').DataTable(
         {
             ajax: {
-                url: 'api/Bovines',
+                url: '/api/Bovines',
                 dataSrc: ''
             },
             columns: [
-                { data: 'NickName' },
+                {
+                    data: 'NickName',
+                    render: function(data, type, row) {
+                        return "<a href='/office/cattle/" + row.Id + "'>" + data + "</a>";
+                    }
+                },
                 { data: 'Bolus' },
                 { data: 'EarTag' },
                 { data: 'Brand' },
                 { data: 'BirthDate' },
-                { data: 'Sex' },
+                {
+                    data: 'Sex',
+                    render: function(data, type, row) {
+                        if (data === 0)
+                            return "Male";
+                        return "Female"; 
+                    }
+                },
                 { data: 'Breed' },
                 { data: 'WeeningDate'}
             ]
+
 
         });
     });
