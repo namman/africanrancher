@@ -57,7 +57,7 @@ namespace africanrancher.Models.Domain.SampleData
             var maxNumberOfFemalesToMakeBreeders = Convert.ToInt16(totalBovines*PercentageOfFemalesThatBreed);
 
 
-            var bovinesOrderedOldestToYoungest = bovinesList.OrderByDescending(b => b.BirthDate);
+            var bovinesOrderedOldestToYoungest = bovinesList.OrderBy(b => b.BirthDate);
 
             var breederMales = bovinesOrderedOldestToYoungest
                 .Where(b => b is MaleBovine)

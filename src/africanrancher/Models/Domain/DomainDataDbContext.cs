@@ -25,10 +25,7 @@ namespace africanrancher.Models.Domain
         
         public DbSet<Pairing> Pairings { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Pairing>().
-        }
+        
        
     }
 

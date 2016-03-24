@@ -47,8 +47,22 @@ namespace africanrancher.Controllers
         [Route("api/Bovines/{id}/progeny")]
         public async Task<IActionResult> GetProgeny(int id)
         {
-           throw new NotImplementedException(); 
+            
+            var progeny = await (from p in _context.Pairings
+                where (p.SireId != null && p.SireId == id || p.DamId != null && p.DamId == id)
+                from b in _context.Bovines.Where(b => b.Id == p.BovineId)
+                select b).ToListAsync();
+
+
+            var dtosToReturn = progeny.Select(p => p.ToDto());
+
+            return Json(dtosToReturn);
+
+
+
         }
+
+        
 
         // POST api/values
         [HttpPost] 
