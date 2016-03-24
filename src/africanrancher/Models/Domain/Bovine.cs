@@ -53,11 +53,7 @@ namespace africanrancher.Models.Domain
 
         public string Brand { get; set; }
 
-
-        public MaleBovine Sire { get; set; }
-
-
-        public FemaleBovine Dam { get; set; }
+        
 
         public DateTimeOffset? BirthDate { get; set; }
 
@@ -67,7 +63,8 @@ namespace africanrancher.Models.Domain
         public DateTimeOffset? Death { get; set; }
         public DateTimeOffset? Sale { get; set; }
         public DateTimeOffset? Purchase { get; set; }
-
+        
+        public List<Pairing> Pairings { get; set; } 
         public  List<Weighing> Weighings { get; set; } 
         public List<Ailment> Ailments { get; set; } 
     }

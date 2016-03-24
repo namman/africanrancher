@@ -22,8 +22,13 @@ namespace africanrancher.Models.Domain
         public DbSet<Weighing> Weighings { get; set; }
         public DbSet<Ailment> Ailments { get; set; } 
         public DbSet<Treatment> Treatments { get; set; }
+        
+        public DbSet<Pairing> Pairings { get; set; }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<Pairing>().
+        }
        
     }
 

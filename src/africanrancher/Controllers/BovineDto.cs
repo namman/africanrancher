@@ -39,9 +39,7 @@ namespace africanrancher.Controllers
         public string Brand => _bovine.Bolus;
 
         public DateTimeOffset? BirthDate => _bovine.BirthDate;
-        public string SireBolus => _bovine.Sire?.Bolus;
-        public string DamBolus => _bovine.Dam?.Bolus;
-            
+        
         public DateTimeOffset? CastrationDate
         {
             get

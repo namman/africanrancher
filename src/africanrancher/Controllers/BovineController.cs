@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using africanrancher.Models.Domain;
 using Microsoft.AspNet.Mvc;
@@ -42,11 +43,18 @@ namespace africanrancher.Controllers
             
         }
 
+        [HttpGet]
+        [Route("api/Bovines/{id}/progeny")]
+        public async Task<IActionResult> GetProgeny(int id)
+        {
+           throw new NotImplementedException(); 
+        }
+
         // POST api/values
-        [HttpPost]
+        [HttpPost] 
         public async Task<IActionResult> Post([FromBody] BovineDto bovineDto)
         {
-            var newBovineToSaveToDb = await bovineDto.CreateFromDto(_context);
+            var newBovineToSaveToDb = bovineDto.ToBovine();
             var asMale = newBovineToSaveToDb as MaleBovine;
             if (asMale != null)
             {

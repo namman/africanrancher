@@ -11,10 +11,11 @@ namespace africanrancher.Models.Domain.SampleData
         private static List<string> _breedCache;
         private static int _numberOfBreeds;
         private static readonly Random _random = new Random(Guid.NewGuid().GetHashCode());
-        private static readonly double PercentageOfMalesThatBreed = 0.8;
-        private static readonly double PercentageOfFemalesThatBreed = 0.9;
+        private static readonly double PercentageOfMalesThatBreed = 0.1;
+        private static readonly double PercentageOfFemalesThatBreed = 0.3;
         private static readonly double PercentageOfMalesToCastrate = 0.1;
-        private static readonly double PercentageWithUnknownAncestry = 0.1;
+        private static readonly double PercentageOfUnknownParentOnOneSide = 0.05;
+        
         
 
         public static void AddBovines(this DomainDataDbContext context, int numberToAdd, RandomNameProvider randomNameProvider)
@@ -24,8 +25,9 @@ namespace africanrancher.Models.Domain.SampleData
                     .Select(i => CreateRandomBovine(i, seed => GetRandomBreed(context, _random), _random, randomNameProvider))
                     // possibly my first curry
                     .ToList();
-            SetUpProgeny(bovines, _random);
             context.Bovines.AddRange(bovines,GraphBehavior.IncludeDependents);
+            context.SaveChanges();
+            SetUpProgeny(context, _random);
         }
 
         private static string GetRandomBreed(DomainDataDbContext context, Random random)
@@ -40,13 +42,14 @@ namespace africanrancher.Models.Domain.SampleData
             return _breedCache[randomBreedIndex];
         }
 
-        private static void SetUpProgeny(IEnumerable<Bovine> bovines, Random random)
+        private static void SetUpProgeny(DomainDataDbContext context, Random random)
         {
             // order bovines by birth date
             // get oldest males and females, up to maximum each of total number of cattle.
             // remember to exclude castrated males
             // remove those from list, add to breeders list
             // for 80% of the remaining, randomly select a sire and dam
+            var bovines = context.Bovines;
             var bovinesList = bovines.ToList();
             var totalBovines = bovinesList.Count();
 
@@ -79,8 +82,8 @@ namespace africanrancher.Models.Domain.SampleData
 
             foreach (var nonBreeder in remainingNonBreeders)
             {
-                var hasKnownSire = random.NextDouble() < PercentageWithUnknownAncestry;
-                var hasKnownDam = random.NextDouble() < PercentageWithUnknownAncestry;
+                var hasKnownSire = random.NextDouble() > PercentageOfUnknownParentOnOneSide;
+                var hasKnownDam = random.NextDouble() > PercentageOfUnknownParentOnOneSide;
 
                 var randomSire = hasKnownSire
                     ? breederMales[random.Next(0, (breederMalesCount - 1) >= 0 ? breederMalesCount -1 : 0)]
@@ -89,8 +92,18 @@ namespace africanrancher.Models.Domain.SampleData
                 var randomDam = hasKnownDam
                     ? breederFemales[random.Next(0, (breederFemalesCount - 1) >= 0 ? breederFemalesCount - 1 : 0)] : null;
 
-                nonBreeder.Sire = (MaleBovine) randomSire;
-                nonBreeder.Dam = (FemaleBovine) randomDam;
+                if (randomSire != null || randomDam != null)
+                {
+                    var pairing = new Pairing()
+                                  {
+                                      Bovine = nonBreeder,
+                                      Dam = randomDam as FemaleBovine,
+                                      Sire = randomSire as MaleBovine
+
+                                  };
+
+                    context.Pairings.Add(pairing);
+                }
             }
         }
 
