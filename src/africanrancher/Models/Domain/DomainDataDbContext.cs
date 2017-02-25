@@ -1,11 +1,21 @@
-﻿using Microsoft.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace africanrancher.Models.Domain
 {
+   
+
     public class DomainDataDbContext : DbContext
     {
         public DomainDataDbContext()
         {
+            
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=africanrancher;Trusted_Connection=True;");
+            base.OnConfiguring(optionsBuilder);
+
         }
 
         public DbSet<BreedType> Breeds { get; set; }
@@ -28,6 +38,10 @@ namespace africanrancher.Models.Domain
         
        
     }
+
+   
+    
+    
 
     
 }
